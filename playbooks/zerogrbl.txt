@@ -1,0 +1,11 @@
+# ###########################
+# move the nodes to ZERO
+# ###########################
+SEND grbl-controller STOP
+WAITFOR grbl-controller STOPPED
+WAIT 2
+# Now we zero the axes
+SEND grbl-controller START ZeroPos.nc /dev/ttyUSB0
+WAIT 30
+SEND grbl-controller STOP
+WAITFOR grbl-controller STOPPED

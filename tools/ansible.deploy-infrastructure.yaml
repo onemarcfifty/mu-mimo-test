@@ -1,0 +1,52 @@
+---
+
+# ######################################
+# Playbook to install the necessary
+# software on the nodes
+# this needs internet connection
+# for apt.
+# ######################################
+
+# ######################################
+# Prepare the server
+# ######################################
+
+- name: Install Software on the server
+  hosts: server
+  gather_facts: false
+  become: true
+
+  tasks:
+
+    - name: Install necessary software
+      ansible.builtin.apt:
+        name:
+          - mosquitto
+          - netperf
+        update_cache: true
+
+    - name: Copy the Mosquitto Server config
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/{{ group_names[0] }}/lab.conf"
+        dest: /etc/mosquitto/conf.d/lab.conf
+        mode: "0644"
+
+# ######################################
+# Prepare all nodes
+# ######################################
+
+- name: Install Software on all nodes
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+
+    - name: Install necessary software
+      ansible.builtin.apt:
+        name:
+          - mosquitto-clients
+          - ncat
+          - iperf3
+          - psmisc
+        update_cache: true

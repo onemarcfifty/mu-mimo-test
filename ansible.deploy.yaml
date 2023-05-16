@@ -1,0 +1,76 @@
+---
+
+# ######################################
+# Playbook to distribute the client
+# scripts to all nodes
+# this does not need internet connection
+# ######################################
+
+- name: Start Mosquitto Server
+  hosts: server
+  become: true
+  gather_facts: true
+
+  tasks:
+
+  - name: Gathering Service Facts
+    ansible.builtin.service_facts:
+
+  - name: Make sure mosquitto is started
+    ansible.builtin.systemd:
+      name: mosquitto
+      state: started
+      enabled: true
+    when: ("mosquitto.service" in services)
+
+- name: Kill rogue processes
+  hosts: all
+  become: false
+  gather_facts: false
+
+  tasks:
+
+    - name: Kill all rogue processes
+      ansible.builtin.shell: "(killall clientscript.sh ; killall ncat ; killall iperf3 ; killall mosquitto_sub) >/dev/null 2>&1 ; echo"
+      changed_when: true
+
+
+- name: Distribute and run client script
+  hosts: all
+  gather_facts: true
+
+  tasks:
+
+    - name: Copy all Elements from the group folder to remote hosts
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /tmp/
+        mode: "u+x"
+      with_fileglob:
+        - "{{ playbook_dir }}/{{ group_names[0] }}/*"
+
+    - name: Copy clientscripts to remote hosts
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: '/tmp/'
+        mode: 0755
+      loop:
+        - "{{ playbook_dir }}/clientscript.sh"
+        - "{{ playbook_dir }}/global.config"
+
+    - name: Change bash to ash on OpenWrt
+      ansible.builtin.lineinfile:
+        dest: /tmp/clientscript.sh
+        regexp: '^#!/bin/bash'
+        line: "#!/bin/ash"
+        state: present
+        backup: true
+      when: (ansible_facts['distribution'] == "OpenWrt")
+
+    - name: Run client script on remote hosts
+      ansible.builtin.shell: nohup /tmp/clientscript.sh {{ inventory_hostname }} >/dev/null 2>&1 &
+      delegate_to: "{{ inventory_hostname }}"
+      args:
+        chdir: /tmp
+      changed_when: true
+      when: ansible_connection != 'local'

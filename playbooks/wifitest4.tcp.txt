@@ -1,0 +1,38 @@
+# WIFI MU MIMO Test (With reduced bandwidth)
+# ################################################################
+# Bring in the ax nodes at the same time
+# with reduced Bandwidth
+# ################################################################
+SEND node1 START 192.168.1.100 5201 450 1 REVERSE TCP 200M
+SEND node2 START 192.168.1.100 5202 450 1 REVERSE TCP 200M
+SEND node3 START 192.168.1.99  5203 450 1 REVERSE TCP 200M
+WAITFOR node1 STARTED
+WAITFOR node2 STARTED
+WAITFOR node3 STARTED
+# Now we have three AX nodes downloading
+WAIT 390
+SEND node3 STOP
+SEND node2 STOP
+SEND node1 STOP
+WAITFOR node3 STOPPED
+WAITFOR node2 STOPPED
+WAITFOR node1 STOPPED
+WAIT 10
+# ##################################
+# grab the logfiles from all nodes
+# ##################################
+RECEIVE 6000 results-5201.log
+SEND node1 SENDFILE /tmp/iperf.5201.log 192.168.1.99 6000 NOTRUNCATE
+WAIT 2
+RECEIVE 6001 results-5202.log
+SEND node2 SENDFILE /tmp/iperf.5202.log 192.168.1.99 6001 NOTRUNCATE
+WAIT 2
+RECEIVE 6002 results-5203.log
+SEND node3 SENDFILE /tmp/iperf.5203.log 192.168.1.99 6002 NOTRUNCATE
+WAIT 2
+RECEIVE 6003 results-server-5201.csv
+SEND server SENDFILE /tmp/iperf3-5201.csv 192.168.1.99 6003 NOTRUNCATE
+WAIT 2
+RECEIVE 6004 results-server-5202.csv
+SEND server SENDFILE /tmp/iperf3-5202.csv 192.168.1.99 6004 NOTRUNCATE
+WAIT2

@@ -1,0 +1,11 @@
+# ################################################################
+# move the nodes to the middle of the axis
+# ################################################################
+SEND grbl-controller STOP
+WAITFOR grbl-controller STOPPED
+WAIT 2
+# now we send the G-Code for the middle pos
+SEND grbl-controller START Middle.nc /dev/ttyUSB0
+WAIT 30
+SEND grbl-controller STOP
+WAITFOR grbl-controller STOPPED

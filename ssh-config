@@ -1,0 +1,31 @@
+Host server
+    HostName 192.168.1.100
+    AddressFamily inet
+    User ansiblessh
+    Port 22
+    IdentityFile ~/.ssh/id_ansible
+
+Host node1
+    HostName 192.168.1.101
+    User ansiblessh
+    IdentityFile ~/.ssh/id_ansible
+
+Host node2
+    HostName 192.168.1.102
+    User ansiblessh
+    IdentityFile ~/.ssh/id_ansible
+
+Host node3
+    HostName 192.168.1.103
+    User ansiblessh
+    IdentityFile ~/.ssh/id_ansible
+
+Host node4
+    HostName 192.168.1.104
+    User ansiblessh
+    IdentityFile ~/.ssh/id_ansible
+
+Host grbl
+    HostName 172.16.0.185
+    User ansiblessh
+    IdentityFile ~/.ssh/id_ansible

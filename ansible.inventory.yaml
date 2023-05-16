@@ -1,0 +1,24 @@
+all:
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  children:
+    grbl:
+      hosts:
+        grbl-controller:
+          ansible_host: 172.16.0.185
+    servers:
+      hosts:
+        server:
+          ansible_host: 192.168.1.100
+        localhost:
+          ansible_connection: local
+    nodes:
+      hosts:
+        node1:
+          ansible_host: 192.168.1.101
+        node2:
+          ansible_host: 192.168.1.102
+        node3:
+          ansible_host: 192.168.1.103
+        node4:
+          ansible_host: 192.168.1.104

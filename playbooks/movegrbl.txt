@@ -1,0 +1,8 @@
+# #####################################
+# move the nodes across the axis
+# #####################################
+SEND grbl-controller STOP
+WAITFOR grbl-controller STOPPED
+WAIT 2
+# now we send the G-Code for the move
+SEND grbl-controller START Move.nc /dev/ttyUSB0

@@ -1,0 +1,5 @@
+RECEIVE 6000 results-mimo-5201-moving.csv
+SEND server SENDFILE /tmp/iperf3-5201.csv 192.168.139.146 6000 TRUNCATE
+WAIT 1
+RECEIVE 6000 results-mimo-5202-moving.csv
+SEND server SENDFILE /tmp/iperf3-5202.csv 192.168.139.146 6000 TRUNCATE

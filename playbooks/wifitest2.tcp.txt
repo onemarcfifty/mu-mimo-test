@@ -1,0 +1,86 @@
+# WIFI MU MIMO Test
+#WAITFOR server ALIVE
+#WAITFOR node4 ALIVE
+#WAITFOR node1 ALIVE
+#WAITFOR node2 ALIVE
+#WAITFOR node3 ALIVE
+# ################################################################
+# Bring in the ax nodes one after the other
+# ################################################################
+SEND node1 START 192.168.1.100 5201 200 1 REVERSE TCP
+WAITFOR node1 STARTED
+# Now we have one AX node downloading
+WAIT 15
+SEND node2 START 192.168.1.99 5202 200 1 REVERSE TCP
+WAITFOR node2 STARTED
+# Now we have two AX nodes downloading
+WAIT 15
+SEND node3 START 192.168.1.100 5203 15 1 REVERSE TCP
+WAITFOR node3 STARTED
+# Now we have three AX nodes downloading
+WAIT 20
+SEND node3 STOP
+WAITFOR node3 STOPPED
+# The third node should be finished now
+WAIT 10
+SEND node2 STOP
+WAITFOR node2 STOPPED
+# Node 2 should be finished now, only AX Node1 remains
+WAIT 10
+# now bring in the Wifi 5 Wave 1 Node 
+SEND node4 START 192.168.1.99 5204 100 1 REVERSE TCP
+WAITFOR node4 STARTED
+# We now have one AX node and one AC Wave 1 Node 
+WAIT 15
+SEND node1 STOP
+WAITFOR node1 STOPPED
+# Now only the AC node remains
+WAIT 5
+SEND node2 STOP
+SEND node3 STOP
+SEND node4 STOP
+WAIT 2
+WAITFOR node1 STOPPED
+WAITFOR node2 STOPPED
+WAITFOR node3 STOPPED
+WAITFOR node4 STOPPED
+RECEIVE 6000 results-mimo-client-5201-wifi56-TCP.log
+SEND node1 SENDFILE /tmp/iperf.5201.log 192.168.1.99 6000 NOTRUNCATE
+WAIT 2
+RECEIVE 6000 results-mimo-client-5202-wifi56-TCP.log
+SEND node2 SENDFILE /tmp/iperf.5202.log 192.168.1.99 6000 NOTRUNCATE
+WAIT 2
+RECEIVE 6000 results-mimo-client-5203-wifi56-TCP.log
+SEND node3 SENDFILE /tmp/iperf.5203.log 192.168.1.99 6000 NOTRUNCATE
+WAIT 2
+RECEIVE 6000 results-mimo-client-5204-wifi56-TCP.log
+SEND node4 SENDFILE /tmp/iperf.5204.log 192.168.1.99 6000 NOTRUNCATE
+WAIT 10
+# ################################################################
+# Now we bring in the Wifi 6 ax nodes with mixed send/receive mode
+# ################################################################
+SEND node1 START 192.168.1.100 5201 15 1 REVERSE TCP
+WAITFOR node1 STARTED
+# Node1 is downloading
+SEND node2 START 192.168.1.99 5202 15 1 FORWARD TCP
+WAITFOR node2 STARTED
+SEND node3 START 192.168.1.100 5203 15 1 FORWARD TCP
+WAITFOR node2 STARTED
+# the other two are uploading
+WAIT 20
+SEND node1 STOP
+SEND node2 STOP
+SEND node3 STOP
+WAIT 2
+WAITFOR node1 STOPPED
+WAITFOR node2 STOPPED
+WAITFOR node3 STOPPED
+# #############################
+# grab the log files 
+# #############################
+RECEIVE 6000 results-mimo-5201-wifi56-TCP.csv
+SEND server SENDFILE /tmp/iperf3-5201.csv 192.168.1.99 6000 NOTRUNCATE
+WAIT 5
+RECEIVE 6000 results-mimo-5203-wifi56-TCP.csv
+SEND server SENDFILE /tmp/iperf3-5203.csv 192.168.1.99 6000 NOTRUNCATE
+WAIT 5
