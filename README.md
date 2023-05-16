@@ -73,9 +73,24 @@ At the moment I am testing the following Wi-Fi Routers:
 
 All these routers are supported by OpenWrt. Hence the test sequence will be:
 
-1. Conduct all tests (A-E) with Stock Firmware
-2. Flash OpenWrt on all devices
-3. Redo all tests with OpenWrt.
+1. Conduct all tests (A-E) with Stock Firmware (DONE)
+2. Flash OpenWrt on all devices (DONE)
+3. Redo all tests with OpenWrt. (to be done)
 
 There will - of course - be videos about this [on my YouTube Channel](https://www.youtube.com/c/onemarcfifty);-)
 
+Here's the current project status (2023-05-16):
+
+| Device/Test    | RedMi 6000 | Xiaomi AX3200 | Xiaomi AX3600 | TP-Link EAP225 | TP-Link EAP615 | Linksys MR8300 | Banana Pi R3 | WAX206 |
+|----------------|------------|---------------|---------------|----------------|----------------|----------------|--------------|--------|
+| Test A Stock   | OK         | OK            | OK            | OK             | OK             | OK             | N/A          | OK     |
+| Test B Stock   | OK         | OK            | OK            | N/A            | OK             | OK             | N/A          | OK     |
+| Test C Stock   | OK         | OK            | OK            | OK             | OK             | OK             | N/A          | OK     |
+| Test D Stock   | OK         | OK            | OK            | OK             | OK             | OK             | N/A          | OK     |
+| Test E Stock   | OK         | OK            | OK            | OK             | OK             | OK             | N/A          | OK     |
+| Flash OpenWrt  | OK         | OK            | OK            | OK             | OK             | OK             | OK           | OK     |
+| Test A OpenWrt |            | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | TBD    |
+| Test B OpenWrt |            | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | TBD    |
+| Test C OpenWrt |            | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | TBD    |
+| Test D OpenWrt |            | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | TBD    |
+| Test E OpenWrt |            | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | TBD    |
