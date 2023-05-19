@@ -144,23 +144,10 @@ if [ "XB" == "X$1" ] ; then
 
 	echo "Now running Flent rrul tests for SWITCH - please wait"
 	
-	flent rrul -H $SERVER_LAN_IP -D RouterTests/$2/Test$1 -t SWITCH_Stock_NoQoS
+	flent rrul -H $SERVER_LAN_IP -D RouterTests/$2/Test$1 -t SWITCH_NoQoS
 	if [ "XNONAT" != "X$3" ] ; then
 		echo "Now running Flent rrul tests for NAT - please wait"
-		flent rrul -H $SERVER_WAN_IP -D RouterTests/$2/Test$1 -t NAT_Stock_NoQoS
-		cat <<-EOF
-
-		QoS/SQM/Bufferbloat test
-		========================
-
-		Please check if there are any QoS / SQM related settings in the Router GUI
-		and enable them. 
-
-		Press Enter when ready
-		EOF
-		read
-		flent rrul -H $SERVER_WAN_IP -D RouterTests/$2/Test$1 -t NAT_Stock_With_QoS
-
+		flent rrul -H $SERVER_WAN_IP -D RouterTests/$2/Test$1 -t NAT_NoQoS
 		echo "deleting route to the WAN side"
 		sudo ip route del 10.50.50.0/24 via 192.168.1.1 >/dev/null 2>&1
 	fi
@@ -168,6 +155,59 @@ if [ "XB" == "X$1" ] ; then
 	# grab the test results from the server
 #	scp -rF ssh-config server:/tmp/*.csv RouterTests/$2/Test$1/
 	grab_iperf_results $1 $2
+fi
+
+
+
+if [ "XB1" == "X$1" ] ; then
+	cat <<-EOF
+	OFFLOAD SPEED TESTS
+	===================
+
+	Enable Hardware Offloading
+	Press key when ready
+	EOF
+	read
+
+	ansible-playbook -l servers ansible.deploy.yaml
+
+	echo "adding route to the WAN side"
+	sudo ip route add 10.50.50.0/24 via 192.168.1.1 >/dev/null 2>&1
+	echo "NAT Test"
+	spawn_iperf_server $SERVER_WAN_IP 5202
+	sleep 5
+	wmctrl -r "iperf5202" -e "0,1921,0,-1,-1"	
+	iperf3 -t 15 -c    $SERVER_WAN_IP -p 5202
+	iperf3 -t 15 -R -c $SERVER_WAN_IP -p 5202
+	destroy_iperf_server
+
+	echo "Now running Flent rrul tests for NAT - please wait"
+	flent rrul -H $SERVER_WAN_IP -D RouterTests/$2/Test$1 -t NAT_NoQoS_HW_Offloaded
+	echo "deleting route to the WAN side"
+	sudo ip route del 10.50.50.0/24 via 192.168.1.1 >/dev/null 2>&1
+
+	# grab the test results from the server
+#	scp -rF ssh-config server:/tmp/*.csv RouterTests/$2/Test$1/
+	grab_iperf_results $1 $2
+fi
+
+if [ "XB2" == "X$1" ] ; then
+	cat <<-EOF
+	QoS (Bufferbloat) TESTS
+	=======================
+
+	Disable Hardware Offload
+	Enable SQM
+	Press key when ready
+	EOF
+	read
+
+	ansible-playbook -l servers ansible.deploy.yaml
+
+	echo "Now running Flent rrul tests for NAT - please wait"
+	flent rrul -H $SERVER_WAN_IP -D RouterTests/$2/Test$1 -t NAT_QoS
+	echo "deleting route to the WAN side"
+	sudo ip route del 10.50.50.0/24 via 192.168.1.1 >/dev/null 2>&1
 	cat <<-EOF
 
 	PREP FOR NEXT TEST
@@ -233,6 +273,8 @@ if [ "XC" == "X$1" ] ; then
 	# to route over the test interface ;-(
 	ssh -F ssh-config node1  "sudo ip route add 172.16.0.0/24 via 192.168.1.100"
 	ssh -F ssh-config node1  "sudo /tmp/qdisc.sh"
+	#ssh -F ssh-config node2  "sudo ip route del default via 172.16.0.1"
+	#ssh -F ssh-config node3  "sudo ip route del default via 172.16.0.1"
 
 	destroy_iperf_server
 	spawn_iperf_server $SERVER_LAN_IP 5201
