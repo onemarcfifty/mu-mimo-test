@@ -202,6 +202,8 @@ if [ "XB2" == "X$1" ] ; then
 	EOF
 	read
 
+	echo "adding route to the WAN side"
+	sudo ip route add 10.50.50.0/24 via 192.168.1.1 >/dev/null 2>&1
 	ansible-playbook -l servers ansible.deploy.yaml
 
 	echo "Now running Flent rrul tests for NAT - please wait"

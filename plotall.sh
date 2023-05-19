@@ -1,14 +1,14 @@
 #!/bin/bash
 
 
-for TestBSubDir in RouterTests/*/TestB ; do 
+for TestBSubDir in RouterTests/*/TestB* ; do 
     gnuplot -c tools/gnuplot_TestB.gp "$TestBSubDir"
 done
 
 
 # Plots for Test C (Wifi Burst)
 # We want one plot for each Client and then a combined plot
-for TestCSubDir in RouterTests/*/TestC ; do 
+for TestCSubDir in RouterTests/*/TestC* ; do 
     FileList=()
     for LogFile in ${TestCSubDir}/*.log ; do
         echo $LogFile

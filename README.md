@@ -89,8 +89,8 @@ Here's the current project status (2023-05-16):
 | Test D Stock   | OK         | OK            | OK            | OK             | OK             | OK             | N/A          | OK     |
 | Test E Stock   | OK         | OK            | OK            | OK             | OK             | OK             | N/A          | OK     |
 | Flash OpenWrt  | OK         | OK            | OK            | OK             | OK             | OK             | OK           | OK     |
-| Test A OpenWrt | TBD        | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | OK    |
-| Test B OpenWrt | TBD        | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | OK    |
-| Test C OpenWrt | TBD        | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | OK    |
-| Test D OpenWrt | TBD        | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | OK    |
+| Test A OpenWrt | OK         | OK            | TBD           | TBD            | TBD            | TBD            | TBD          | OK    |
+| Test B OpenWrt | OK         | OK            | TBD           | TBD            | TBD            | TBD            | TBD          | OK    |
+| Test C OpenWrt | OK         | OK            | TBD           | TBD            | TBD            | TBD            | TBD          | OK    |
+| Test D OpenWrt | OK         | OK            | TBD           | TBD            | TBD            | TBD            | TBD          | OK    |
 | Test E OpenWrt | TBD        | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | TBD    |
