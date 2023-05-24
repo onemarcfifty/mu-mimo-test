@@ -93,4 +93,4 @@ Here's the current project status (2023-05-16):
 | Test B OpenWrt | OK         | OK            | OK            | OK             | OK             | OK             | OK           | OK     |
 | Test C OpenWrt | OK         | OK            | OK            | OK             | OK             | OK             | OK           | OK     |
 | Test D OpenWrt | OK         | OK            | OK            | OK             | OK             | OK             | OK           | OK     |
-| Test E OpenWrt | TBD        | TBD           | TBD           | TBD            | TBD            | TBD            | TBD          | TBD    |
+| Test E OpenWrt | OK         | OK            | OK            | OK             | TBD            | OK             | OK           | OK     |
