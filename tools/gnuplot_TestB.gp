@@ -21,3 +21,9 @@ set xrange [1:35]
 # Plot the first set of data
 plot    ARG1."/iperf3-5201.csv" using ($0+1):(column(2) >= threshold ? column(2) : 1/0) with lines lw 3 title "SWITCH", \
         ARG1."/iperf3-5202.csv" using ($0+1):(column(2) >= threshold ? column(2) : 1/0) with lines lw 5 title "NAT"
+
+set output ARG1."/plot3.png"
+set xrange [1:35]
+# Plot the first set of data
+plot    ARG1."/iperf3-5201.csv" using ($0+1):(column(2) >= threshold ? column(2) : 1/0) smooth cspline with lines lw 3 title "SWITCH", \
+        ARG1."/iperf3-5202.csv" using ($0+1):(column(2) >= threshold ? column(2) : 1/0) smooth cspline with lines lw 5 title "NAT"

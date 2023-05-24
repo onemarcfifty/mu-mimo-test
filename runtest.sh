@@ -406,46 +406,55 @@ if [ "XE" == "X$1" ] ; then
 	cp playbooks/wifitest4.txt playbooks/wifitest4.tcp.txt
 	sed -i s/UDP/TCP/g playbooks/wifitest4.tcp.txt
 
-	# ###### STATIC TESTS
+	if [ "X2" != "X$3" ] ; then
+		# ###### STATIC TESTS
+		# center the nodes on the ramp
+		./orchestrate.sh -p playbooks/centergrbl.txt
+		if [ "X2" != "X$4" ] ; then
+			# run the first playbook (static MU MIMO)
+			./orchestrate.sh -p playbooks/wifitest3.txt
+			mkdir -p RouterTests/$2/Test$1/static.udp
+			mv results*.csv RouterTests/$2/Test$1/static.udp/
+			mv results*.log RouterTests/$2/Test$1/static.udp/
+			cp /tmp/iperf3-5203.csv RouterTests/$2/Test$1/static.udp/
+		fi
+		if [ "X1" != "X$4" ] ; then
+			# the same with TCP
+			./orchestrate.sh -p playbooks/wifitest3.tcp.txt
+			mkdir -p RouterTests/$2/Test$1/static.tcp
+			mv results*.csv RouterTests/$2/Test$1/static.tcp/
+			mv results*.log RouterTests/$2/Test$1/static.tcp/
+			cp /tmp/iperf3-5203.csv RouterTests/$2/Test$1/static.tcp/
+		fi
+	fi
 
-	# center the nodes on the ramp
-	./orchestrate.sh -p playbooks/centergrbl.txt
-	# run the first playbook (static MU MIMO)
-	./orchestrate.sh -p playbooks/wifitest3.txt
-	mkdir -p RouterTests/$2/Test$1/static.udp
-	mv results*.csv RouterTests/$2/Test$1/static.udp/
-	mv results*.log RouterTests/$2/Test$1/static.udp/
-	cp /tmp/iperf3-5203.csv RouterTests/$2/Test$1/static.udp/
-	# the same with TCP
-	./orchestrate.sh -p playbooks/wifitest3.tcp.txt
-	mkdir -p RouterTests/$2/Test$1/static.tcp
-	mv results*.csv RouterTests/$2/Test$1/static.tcp/
-	mv results*.log RouterTests/$2/Test$1/static.tcp/
-	cp /tmp/iperf3-5203.csv RouterTests/$2/Test$1/static.tcp/
-
-	# ###### MOVING TESTS
-
-	# zero the axes
-	./orchestrate.sh -p playbooks/zerogrbl.txt
-	# move the axes
-	./orchestrate.sh -p playbooks/movegrbl.txt
-	# run the first playbook (moving MU MIMO)
-	./orchestrate.sh -p playbooks/wifitest4.txt
-	mkdir -p RouterTests/$2/Test$1/moving.udp
-	mv results*.csv RouterTests/$2/Test$1/moving.udp/
-	mv results*.log RouterTests/$2/Test$1/moving.udp/
-	cp /tmp/iperf3-5203.csv RouterTests/$2/Test$1/moving.udp/
-	# the same with TCP
-	# zero the axes
-	./orchestrate.sh -p playbooks/zerogrbl.txt
-	# move the axes
-	./orchestrate.sh -p playbooks/movegrbl.txt
-	./orchestrate.sh -p playbooks/wifitest4.tcp.txt
-	mkdir -p RouterTests/$2/Test$1/moving.tcp
-	mv results*.csv RouterTests/$2/Test$1/moving.tcp/
-	mv results*.log RouterTests/$2/Test$1/moving.tcp/
-	cp /tmp/iperf3-5203.csv RouterTests/$2/Test$1/moving.tcp/
-
+	if [ "X1" != "X$3" ] ; then
+		# ###### MOVING TESTS
+		# zero the axes
+		./orchestrate.sh -p playbooks/zerogrbl.txt
+		if [ "X2" != "X$4" ] ; then
+			# move the axes
+			./orchestrate.sh -p playbooks/movegrbl.txt
+			# run the first playbook (moving MU MIMO)
+			./orchestrate.sh -p playbooks/wifitest4.txt
+			mkdir -p RouterTests/$2/Test$1/moving.udp
+			mv results*.csv RouterTests/$2/Test$1/moving.udp/
+			mv results*.log RouterTests/$2/Test$1/moving.udp/
+			cp /tmp/iperf3-5203.csv RouterTests/$2/Test$1/moving.udp/
+		fi
+		if [ "X1" != "X$4" ] ; then
+			# the same with TCP
+			# zero the axes
+			./orchestrate.sh -p playbooks/zerogrbl.txt
+			# move the axes
+			./orchestrate.sh -p playbooks/movegrbl.txt
+			./orchestrate.sh -p playbooks/wifitest4.tcp.txt
+			mkdir -p RouterTests/$2/Test$1/moving.tcp
+			mv results*.csv RouterTests/$2/Test$1/moving.tcp/
+			mv results*.log RouterTests/$2/Test$1/moving.tcp/
+			cp /tmp/iperf3-5203.csv RouterTests/$2/Test$1/moving.tcp/
+		fi
+	fi
 	# zero the axes
 	./orchestrate.sh -p playbooks/zerogrbl.txt
 

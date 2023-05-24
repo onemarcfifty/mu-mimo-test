@@ -15,8 +15,8 @@ if (ARGC == 1) {
 # plot two lines in one
 if (ARGC == 3) {
     set output ARG3
-    plot ARG1 using 1:2 with lines title "Throughput node1", \
-         ARG2 using 1:2 with lines title "Throughput node2"
+    plot ARG1 using 1:2 smooth bezier with lines lw 3 title "Throughput node1", \
+         ARG2 using 1:2 smooth bezier with lines lw 3 title "Throughput node2"
 }
 
 set output

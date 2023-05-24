@@ -22,17 +22,22 @@ WAIT 10
 # grab the logfiles from all nodes
 # ##################################
 RECEIVE 6000 results-5201.log
+WAIT 1
 SEND node1 SENDFILE /tmp/iperf.5201.log 192.168.1.99 6000 NOTRUNCATE
-WAIT 2
+WAIT 5
 RECEIVE 6001 results-5202.log
+WAIT 1
 SEND node2 SENDFILE /tmp/iperf.5202.log 192.168.1.99 6001 NOTRUNCATE
-WAIT 2
+WAIT 5
 RECEIVE 6002 results-5203.log
+WAIT 1
 SEND node3 SENDFILE /tmp/iperf.5203.log 192.168.1.99 6002 NOTRUNCATE
-WAIT 2
+WAIT 5
 RECEIVE 6003 results-server-5201.csv
+WAIT 1
 SEND server SENDFILE /tmp/iperf3-5201.csv 192.168.1.99 6003 NOTRUNCATE
-WAIT 2
+WAIT 5
 RECEIVE 6004 results-server-5202.csv
+WAIT 1
 SEND server SENDFILE /tmp/iperf3-5202.csv 192.168.1.99 6004 NOTRUNCATE
-WAIT2
+WAIT 5
