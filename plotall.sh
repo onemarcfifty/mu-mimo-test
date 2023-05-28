@@ -1,11 +1,12 @@
 #!/bin/bash
 
+function plotB() {
+    for TestBSubDir in RouterTests/*/TestB* ; do 
+        gnuplot -c tools/gnuplot_TestB.gp "$TestBSubDir"
+    done
+}
 
-for TestBSubDir in RouterTests/*/TestB* ; do 
-    gnuplot -c tools/gnuplot_TestB.gp "$TestBSubDir"
-done
-
-
+function plotC() {
 # Plots for Test C (Wifi Burst)
 # We want one plot for each Client and then a combined plot
 for TestCSubDir in RouterTests/*/TestC* ; do 
@@ -19,8 +20,9 @@ for TestCSubDir in RouterTests/*/TestC* ; do
     FileList+=("${TestCSubDir}/plot_all.png")
     gnuplot -c tools/gnuplot_TestC.gp "${FileList[@]}"
 done
+}
 
-
+function plotD() {
 # Plots for Test D (MU MIMO)
 # We want one plot for each of the three tests
 
@@ -77,7 +79,13 @@ for TestDSubDir in RouterTests/*/TestD* ; do
     done
     gnuplot -c tools/gnuplot_TestD.gp "${TestDSubDir}"
 done
+}
 
+format_counter() {
+    printf "%03d" "$1"  # 3 specifies the minimum width, adjust as needed
+}
+
+function prepareE() {
 # Plots for Test E (MU MIMO)
 # We want one plot for each of the four tests
 for TestESubDir in RouterTests/*/TestE* ; do 
@@ -89,6 +97,7 @@ for TestESubDir in RouterTests/*/TestE* ; do
         rm "$TestESubDir/plot$i/plot-5202.txt"
         rm "$TestESubDir/plot$i/plot-5203.txt"
     done
+    rm $TestESubDir/plot*.png
     # every "Block" starts and ends with "[ ID]"
     toggle_line="[ ID]"
     # we have four distinct log file groups, one for each port
@@ -112,8 +121,8 @@ for TestESubDir in RouterTests/*/TestE* ; do
                 truncate -s 0 "$output_file"
                 line_number=0
                 # the first two test had been time-shifted
-                if [[ "$port" == "5202" && "$counter" < 3 ]] ; then line_number=15 ; fi
-                if [[ "$port" == "5203" && "$counter" < 3 ]] ; then line_number=31 ; fi
+                if [[ "$port" == "5202" && "$counter" < 3 ]] ; then line_number=20 ; fi
+                if [[ "$port" == "5203" && "$counter" < 3 ]] ; then line_number=40 ; fi
             fi
         # if we read in a "normal" line, then we write it into the plot file
         else
@@ -122,12 +131,40 @@ for TestESubDir in RouterTests/*/TestE* ; do
                 ((line_number+=1))
                 result=$(awk '/MBytes/ && !/sender|receiver/ {print $7}' < <(echo "$line")) 
                 #echo $result
-                echo "$line_number $result" >> "$output_file"
+                formatted_line_number=$(format_counter "$line_number")
+                echo "$formatted_line_number $result" >> "$output_file"
             fi
         fi
       done < "${TestESubDir}/moving.tcp/results-${port}.log"
     done
-    gnuplot -c tools/gnuplot_TestE.gp "${TestESubDir}"
+    for i in 1 2 3 4; do 
+        join -a 1 -a 2 -e 0 -o 0,1.2,2.2 \
+        "${TestESubDir}/plot${i}/plot-5201.txt" \
+        "${TestESubDir}/plot${i}/plot-5202.txt" \
+        | join -a 1 -a 2 -e 0 -o 0,1.2,1.3,2.2 - \
+        "${TestESubDir}/plot${i}/plot-5203.txt" \
+        >"${TestESubDir}/plot${i}/join.txt"
+    done
 done
+}
+
+function plotE() {
+for TestESubDir in RouterTests/*/TestE* ; do 
+    echo $TestESubDir
+    if [[ $TestESubDir == *"OWRT"* ]]; then
+        TestESubDir2="${TestESubDir//OWRT/STOCK}"
+    else
+        TestESubDir2="${TestESubDir//STOCK/OWRT}"
+    fi    
+    echo $TestESubDir2
+    gnuplot -c tools/gnuplot_TestE.gp "${TestESubDir}" "${TestESubDir2}"
+done
+}
+
+#plotB
+#plotC
+#plotD
+prepareE
+plotE
 
 
